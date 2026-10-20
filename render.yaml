@@ -1,0 +1,25 @@
+# Render Blueprint — creates the CHS Career Spin static site.
+# Render → New → Blueprint → pick this repository → Apply.
+services:
+  - type: web
+    name: chs-career-spin
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      # Public by design (they end up in the page anyway); the database is
+      # protected by the locked schema in supabase/schema.sql.
+      - key: VITE_SUPABASE_URL
+        value: https://sordhkgkgyehhdtydkfd.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: sb_publishable_t2sJPLhtoxXIZ633VhcCZQ_9h--23DE
+    routes:
+      # Single-page app: serve index.html for /admin and any other path
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
