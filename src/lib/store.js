@@ -105,6 +105,8 @@ const Device = {
       return false;
     },
     async adminLogin(pw) { return pw === cfg.ADMIN_PASSWORD; },
+    async adminNeedsSetup() { return false; }, // local mode uses ADMIN_PASSWORD from config
+    async adminSetup() { return false; },
     async listRegistrations() { return this._regs(); },
     async clearRegistrations() { this._saveRegs([]); },
     async jackpotClaimed() { return this._regs().some((r) => r.prize === cfg.JACKPOT_PRIZE); },
@@ -201,6 +203,13 @@ const Device = {
       async decrementStock(name) { return (await rpc("decrement_stock", { prize_name: name })) === true; },
 
       // Admin — the password is checked by the database, then kept in memory only.
+      async adminNeedsSetup() { return (await rpc("admin_password_set")) !== true; },
+      /** One-time: works only while no admin password exists. */
+      async adminSetup(pw) {
+        const ok = (await rpc("admin_setup", { p_pw: pw })) === true;
+        if (ok) adminPw = pw;
+        return ok;
+      },
       async adminLogin(pw) {
         const ok = (await rpc("is_admin", { p_pw: pw })) === true;
         adminPw = ok ? pw : null;

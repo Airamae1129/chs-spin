@@ -175,12 +175,39 @@ grant execute on function
   public.admin_set_stock(text, text, int)
 to anon, authenticated;
 
+-- ---------- First-time admin setup (from the /admin page) ----------
+-- Has an admin password been set yet?
+create or replace function public.admin_password_set()
+returns boolean language sql security definer set search_path = public stable as $$
+  select exists (select 1 from app_secrets where key = 'admin_password_hash');
+$$;
+
+-- Set the admin password ONCE. Only works while no password exists;
+-- after that it always returns false (change it later via SQL).
+create or replace function public.admin_setup(p_pw text)
+returns boolean language plpgsql security definer set search_path = public, extensions as $$
+declare n int;
+begin
+  if p_pw is null or length(p_pw) < 8 then
+    raise exception 'password must be at least 8 characters' using errcode = '22023';
+  end if;
+  insert into app_secrets (key, value)
+  values ('admin_password_hash', crypt(p_pw, gen_salt('bf')))
+  on conflict (key) do nothing;
+  get diagnostics n = row_count;
+  return n > 0;
+end $$;
+
+revoke execute on function public.admin_password_set(), public.admin_setup(text) from public;
+grant execute on function public.admin_password_set(), public.admin_setup(text) to anon, authenticated;
+
 -- ---------- Starting data ----------
 insert into public.prize_stock (name, remaining) values
   ('Tracks Fidget', 60), ('Controller Fidget', 78), ('Ballpen', 100), ('Notebook', 100)
 on conflict (name) do nothing;
 
--- Admin password (stored hashed).                         ▼▼▼ CHANGE ME ▼▼▼
+-- Admin password (stored hashed). Optional: you can instead set it once
+-- from the /admin page ("Create admin password").                         ▼▼▼ CHANGE ME ▼▼▼
 insert into public.app_secrets (key, value)
 values ('admin_password_hash', extensions.crypt('change-this-password', extensions.gen_salt('bf')))
 on conflict (key) do update set value = excluded.value;

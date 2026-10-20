@@ -54,6 +54,12 @@ export default function Admin() {
   const [list, setList] = useState([]);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  const [needsSetup, setNeedsSetup] = useState(null); // null = checking
+  const [pw2, setPw2] = useState("");
+
+  useEffect(() => {
+    store.adminNeedsSetup().then(setNeedsSetup).catch(() => setNeedsSetup(false));
+  }, []);
 
   const load = async () => {
     setBusy(true);
@@ -70,6 +76,28 @@ export default function Admin() {
     if (!ok) return setError("Incorrect password.");
     setError("");
     setAuthed(true);
+    await load();
+  };
+
+  // First visit only: create the admin password (the database refuses once one exists).
+  const setup = async (e) => {
+    e.preventDefault();
+    if (pw.length < 8) return setError("Use at least 8 characters.");
+    if (pw !== pw2) return setError("The two passwords don’t match.");
+    setBusy(true);
+    let ok = false;
+    try { ok = await store.adminSetup(pw); }
+    catch (err) { setBusy(false); return setError(err.message || "Could not save the password."); }
+    setBusy(false);
+    if (!ok) {
+      setNeedsSetup(false);
+      setPw(""); setPw2("");
+      return setError("An admin password already exists — log in with it.");
+    }
+    setError("");
+    setNeedsSetup(false);
+    setAuthed(true);
+    setNotice("Admin password saved. Use it next time you log in.");
     await load();
   };
 
@@ -117,7 +145,28 @@ export default function Admin() {
       </div>
 
       <div className="card">
-        {!authed ? (
+        {!authed && needsSetup === null ? (
+          <p>Loading…</p>
+        ) : !authed && needsSetup ? (
+          <form onSubmit={setup}>
+            <span className="eyebrow">First-time setup</span>
+            <h2>Create admin password</h2>
+            <p style={{ marginBottom: 16 }}>
+              No admin password exists yet. Choose one now (at least 8 characters). You’ll use it every time you open this page.
+              This form only works once.
+            </p>
+            <div className="field">
+              <input id="newpw" type="password" autoComplete="new-password" placeholder=" " value={pw} onChange={(e) => setPw(e.target.value)} style={{ paddingLeft: 16 }} />
+              <label htmlFor="newpw" style={{ left: 16 }}>New admin password</label>
+            </div>
+            <div className="field">
+              <input id="newpw2" type="password" autoComplete="new-password" placeholder=" " value={pw2} onChange={(e) => setPw2(e.target.value)} style={{ paddingLeft: 16 }} />
+              <label htmlFor="newpw2" style={{ left: 16 }}>Confirm password</label>
+            </div>
+            <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : "Save password & open admin"}</button>
+            <p className="form-error">{error}</p>
+          </form>
+        ) : !authed ? (
           <form onSubmit={login}>
             <p style={{ marginBottom: 16 }}>Enter the admin password to view registered players.</p>
             <div className="field">
