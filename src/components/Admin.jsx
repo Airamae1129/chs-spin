@@ -106,7 +106,7 @@ export default function Admin() {
     const text = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
     const a = document.createElement("a");
-    a.href = url; a.download = "chs-career-spin-entries.csv"; a.click();
+    a.href = url; a.download = "chs-spin-game-entries.csv"; a.click();
     URL.revokeObjectURL(url);
   };
 

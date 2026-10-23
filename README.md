@@ -1,4 +1,4 @@
-# CHS Career Spin
+# CHS Spin Game
 
 A redesigned version of the CHS "Spin for a chance to Win" booth game, built with React and Vite. It keeps the CHS brand colours and logo.
 

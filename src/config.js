@@ -1,5 +1,5 @@
 /*
- * CHS Career Spin — configuration
+ * CHS Spin Game — configuration
  *
  * STORAGE MODE
  *   Leave SUPABASE_URL / SUPABASE_ANON_KEY empty to run in "local" mode:

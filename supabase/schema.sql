@@ -1,5 +1,5 @@
 -- =====================================================================
---  CHS Career Spin — shared database
+--  CHS Spin Game — shared database
 --  Run this ONCE in Supabase: Dashboard → SQL Editor → New query → Run
 --
 --  >>> BEFORE RUNNING: change the admin password on the line marked  <<<
