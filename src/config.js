@@ -10,14 +10,15 @@
  *   then put the project URL and anon key in a .env file (see .env.example).
  */
 const CONFIG = {
-  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL || "",
-  SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL || "https://sordhkgkgyehhdtydkfd.supabase.co",
+  // Publishable (public) key: safe in the page; the database is locked by supabase/schema.sql.
+  SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_t2sJPLhtoxXIZ633VhcCZQ_9h--23DE",
 
-  // Admin password for LOCAL mode only. In shared (Supabase) mode the password
-  // is set in supabase/schema.sql and checked by the database instead.
   // The address players open. The QR code always points here.
   PUBLIC_URL: "https://chs-spin-game.onrender.com/",
 
+  // Admin password for LOCAL mode only. In shared (Supabase) mode the password
+  // is set from the /admin page and checked by the database instead.
   ADMIN_PASSWORD: "cyberfair2026",
 
   // Starting prize stock (used the first time the game runs / after setup).
