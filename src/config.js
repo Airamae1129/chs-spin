@@ -16,7 +16,7 @@ const CONFIG = {
   // Admin password for LOCAL mode only. In shared (Supabase) mode the password
   // is set in supabase/schema.sql and checked by the database instead.
   // The address players open. The QR code always points here.
-  PUBLIC_URL: "https://chs-career-spin.onrender.com/",
+  PUBLIC_URL: "https://chs-spin-game.onrender.com/",
 
   ADMIN_PASSWORD: "cyberfair2026",
 

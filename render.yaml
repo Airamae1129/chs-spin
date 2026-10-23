@@ -2,7 +2,7 @@
 # Render → New → Blueprint → pick this repository → Apply.
 services:
   - type: web
-    name: chs-career-spin
+    name: chs-spin-game
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
