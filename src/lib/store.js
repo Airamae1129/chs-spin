@@ -48,6 +48,10 @@ const Device = {
     hasPlayed() {
       return !!(lsGet(PLAYED_KEY) || readCookie("chs_played"));
     },
+    /** The registration id this device played with (if any). */
+    playedId() {
+      return lsGet(PLAYED_KEY) || readCookie("chs_played");
+    },
     markPlayed(regId) {
       lsSet(PLAYED_KEY, regId || "1");
       writeCookie("chs_played", regId || "1");
@@ -108,6 +112,7 @@ const Device = {
     async adminNeedsSetup() { return false; }, // local mode uses ADMIN_PASSWORD from config
     async adminSetup() { return false; },
     async listRegistrations() { return this._regs(); },
+    async registrationExists(id) { return this._regs().some((r) => r.id === id); },
     async clearRegistrations() { this._saveRegs([]); },
     async jackpotClaimed() { return this._regs().some((r) => r.prize === cfg.JACKPOT_PRIZE); },
     async resetJackpot() {
@@ -199,6 +204,8 @@ const Device = {
         return rpc("set_prize", { p_id: id, p_prize: prize });
       },
       async jackpotClaimed() { return (await rpc("jackpot_claimed")) === true; },
+      /** False once the admin has cleared the list, so the device may play at the next event. */
+      async registrationExists(id) { return (await rpc("registration_exists", { p_id: id })) === true; },
       async listStock() { return rpc("list_stock"); },
       async decrementStock(name) { return (await rpc("decrement_stock", { prize_name: name })) === true; },
 

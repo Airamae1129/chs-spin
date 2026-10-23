@@ -1,6 +1,6 @@
 # CHS Spin Game
 
-A redesigned version of the CHS "Spin for a chance to Win" booth game, built with React and Vite. It keeps the CHS brand colours and logo.
+CHS's "Spin for a chance to Win" booth game, built with React and Vite in the CHS brand colours and logo. It isn't tied to one event: reset it and reuse it at career fairs, conferences, open days or any other booth (see "Reusing it for another event").
 
 ## Run it
 
@@ -64,7 +64,7 @@ Phones can't open `localhost`, so the game needs a public web address:
 npm run build
 ```
 
-Then go to https://app.netlify.com/drop and drag the `dist` folder onto the page. You'll get a link like `https://chs-career-spin.netlify.app`. Open it and use **Get QR code** to print the QR for the booth.
+Then go to https://app.netlify.com/drop and drag the `dist` folder onto the page. You'll get a link like `https://chs-spin-game.netlify.app`. Open it and use **Get QR code** to print the QR for the booth.
 
 The Supabase settings are baked in when you build. If you change `.env`, run `npm run build` again and re-upload.
 
@@ -102,13 +102,25 @@ Microsoft plans to switch off password-based SMTP for Microsoft 365 after Decemb
 
 **Option C: Gmail (free, up to about 500 emails/day)**
 
-1. Use a dedicated Gmail account for the event, e.g. `chs.careerspin@gmail.com`.
+1. Use a dedicated Gmail account for the event, e.g. `chs.spingame@gmail.com`.
 2. Turn on **2-Step Verification**: https://myaccount.google.com/security
-3. Create an App Password at https://myaccount.google.com/apppasswords. Name it `CHS Career Spin` and copy the 16-character password; Google only shows it once.
+3. Create an App Password at https://myaccount.google.com/apppasswords. Name it `CHS Spin Game` and copy the 16-character password; Google only shows it once.
 4. In Supabase SMTP Settings: Host `smtp.gmail.com`, Port `587`, Username = the full Gmail address, Password = the 16-character app password with no spaces, Sender email = the same Gmail address, Sender name `CHS Spin Game`.
 
 ### After the event
 Download the CSV from the admin page, then pause or delete the Supabase project so the player data isn't kept longer than needed (GDPR). Verified emails are also stored under **Authentication → Users**, and deleting the project removes them too.
+
+## Reusing it for another event
+Before each new event:
+
+1. **Download last event's entries.** Open `/admin` → **Download CSV**.
+2. **Start fresh.** In `/admin`, click **Clear list** (removes all players) and **Reset jackpot**.
+3. **Restock prizes.** In `/admin` → **Prize stock**, enter the new quantities and click **Save** on each.
+4. **Change questions or topics (optional).** Edit `src/data.js`, then push to GitHub and redeploy on Render.
+5. **Change prizes or prize tiers (optional).** Edit `src/config.js` (`DEFAULT_STOCK`, `PRIZE_TIERS`), then push and redeploy.
+6. **Print the QR code.** On the live game page, click **Get QR code**. The link stays the same for every event.
+
+Players who verified their email at a past event are listed in **Supabase → Authentication → Users**. Clearing the list in `/admin` lets them play again. If you also want those sign-ins gone, delete them in Supabase.
 
 ## Customise
 - Questions and topics: `src/data.js`

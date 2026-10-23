@@ -44,7 +44,19 @@ export default function Game() {
   /* ---------- Boot: decide where this device stands ---------- */
   useEffect(() => {
     (async () => {
-      const s = session.get();
+      let s = session.get();
+      // New event: if the admin cleared the list, this device's old entry is gone,
+      // so forget the old lock and let it play again.
+      if (Device.hasPlayed()) {
+        try {
+          const id = Device.playedId();
+          if (id && !(await store.registrationExists(id))) {
+            Device.reset();
+            session.clear();
+            s = null;
+          }
+        } catch {}
+      }
       if (Device.hasPlayed()) {
         if (s && s.stage === "wheel") return enterWheel(s, false);
         if (s && s.stage === "question" && !s.answered) return resumeQuestion(s);

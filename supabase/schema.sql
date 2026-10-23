@@ -201,6 +201,16 @@ end $$;
 revoke execute on function public.admin_password_set(), public.admin_setup(text) from public;
 grant execute on function public.admin_password_set(), public.admin_setup(text) to anon, authenticated;
 
+-- Does this registration still exist? Used after "Clear list" so phones from a
+-- previous event can play again. Reveals nothing but true/false for an unguessable id.
+create or replace function public.registration_exists(p_id uuid)
+returns boolean language sql security definer set search_path = public stable as $$
+  select exists (select 1 from registrations where id = p_id);
+$$;
+
+revoke execute on function public.registration_exists(uuid) from public;
+grant execute on function public.registration_exists(uuid) to anon, authenticated;
+
 -- ---------- Starting data ----------
 insert into public.prize_stock (name, remaining) values
   ('Tracks Fidget', 60), ('Controller Fidget', 78), ('Ballpen', 100), ('Notebook', 100)
