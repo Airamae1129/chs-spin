@@ -43,7 +43,7 @@ The player list is protected. The tables are locked, and the game can only call 
 ### 1b. Turn on the 6-digit email code
 In Supabase:
 1. **Authentication → Sign In / Providers → Email**: make sure Email is enabled and **Email OTP Length** is `6`. Click **Save**.
-2. **Authentication → Emails → Templates**: open **Magic Link** and paste in the contents of `supabase/email-template.html`. Set the subject to `Your CHS Career Spin code: {{ .Token }}`. Do the same for **Confirm signup**. The template must contain `{{ .Token }}`, otherwise players get a link instead of a code.
+2. **Authentication → Emails → Templates**: open **Magic Link** and paste in the contents of `supabase/email-template.html`. Set the subject to `Your CHS Spin Game code: {{ .Token }}`. Do the same for **Confirm signup**. The template must contain `{{ .Token }}`, otherwise players get a link instead of a code.
 3. **Set up SMTP (required for the event).** Supabase's built-in email only sends a few emails per hour, which isn't enough for a booth. See "Email sending (SMTP)" below.
 4. **Authentication → Rate Limits**: raise **Rate limit for sending emails** to about `300` per hour.
 
@@ -83,7 +83,7 @@ Personal Outlook.com/Hotmail addresses **cannot** be used. Microsoft only allows
 | Field | Value |
 |---|---|
 | Sender email | the mailbox address, e.g. `events@yourcompany.com` |
-| Sender name | `CHS Career Spin` |
+| Sender name | `CHS Spin Game` |
 | Host | `smtp.office365.com` |
 | Port | `587` |
 | Username | the same mailbox address |
@@ -105,7 +105,7 @@ Microsoft plans to switch off password-based SMTP for Microsoft 365 after Decemb
 1. Use a dedicated Gmail account for the event, e.g. `chs.careerspin@gmail.com`.
 2. Turn on **2-Step Verification**: https://myaccount.google.com/security
 3. Create an App Password at https://myaccount.google.com/apppasswords. Name it `CHS Career Spin` and copy the 16-character password; Google only shows it once.
-4. In Supabase SMTP Settings: Host `smtp.gmail.com`, Port `587`, Username = the full Gmail address, Password = the 16-character app password with no spaces, Sender email = the same Gmail address, Sender name `CHS Career Spin`.
+4. In Supabase SMTP Settings: Host `smtp.gmail.com`, Port `587`, Username = the full Gmail address, Password = the 16-character app password with no spaces, Sender email = the same Gmail address, Sender name `CHS Spin Game`.
 
 ### After the event
 Download the CSV from the admin page, then pause or delete the Supabase project so the player data isn't kept longer than needed (GDPR). Verified emails are also stored under **Authentication → Users**, and deleting the project removes them too.
